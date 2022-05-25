@@ -10,12 +10,12 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 app.use(cors());
 app.use(express.json());
 
-const uri = "mongodb+srv://:<password>@cluster0.emnmy.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.emnmy.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-const verfiyJWT = async (req, res, next) => {
+// const verfiyJWT = async (req, res, next) => {
 
-}
+// }
 
 
 
@@ -39,17 +39,12 @@ async function run() {
       };
       const result = await userCollection.updateOne(filter, updateDoc, options);
       res.send(result);
-      // const updateDoc = {
-      //   $set: user,
-      // };
-      // const result = await userCollection.updateOne(filter, updateDoc, options);
-      // res.send(result);
       console.log(email);
       
     })
 
   } finally {
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
