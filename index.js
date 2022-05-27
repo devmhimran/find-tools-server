@@ -67,12 +67,7 @@ async function run() {
       res.send(result);
     })
 
-    app.get('admin/:email', async (req, res)=>{
-      const email = req.params.email;
-      const user = await userCollection.findOne({email: email});
-      const adminCheck = user.role === 'admin';
-      res.send({admin: adminCheck})
-    })
+   
 
     app.put('/user/admin/:email',verifyJWT, async (req, res) => {
       const email = req.params.email;
@@ -103,6 +98,14 @@ async function run() {
       const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN, { expiresIn: '24h' });
       res.send({result, token});
 
+    })
+
+    app.get('/admin/:email', async (req, res)=>{
+      const email = req.params.email;
+      const user = await userCollection.findOne({email: email});
+      const adminCheck = user.role === 'admin';
+      console.log(user);
+      res.send({admin: adminCheck})
     })
 
     app.post('/products',verifyJWT, (req, res)=>{
