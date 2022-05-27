@@ -54,6 +54,19 @@ async function run() {
       res.send(users);
     });
 
+    app.put('update/:email', verifyJWT, async (req, res)=>{
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {user},
+      };
+      console.log(user);
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+    })
+
     app.get('admin/:email', async (req, res)=>{
       const email = req.params.email;
       const user = await userCollection.findOne({email: email});
