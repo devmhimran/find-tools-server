@@ -90,6 +90,20 @@ async function run() {
       const order = await ordersCollection.find({ email: email }).toArray();
       res.send(order);
     })
+    // app.put('/orders/:id', verifyJWT,async (req, res)=>{
+    //   const ordersId = req.params.id;
+    //   const ordersStatus = req.body;
+    //   const filter = { _id: ObjectId(ordersId) }; 
+    //   const options ={upsert: true};
+    //   const updatedDoc = {
+    //     $set:{
+    //       status: ordersStatus.status,
+    //     }
+    //   };
+    //   const updatedResult = await ordersCollection.updateOne(filter, updatedDoc, options);
+    //   console.log(ordersStatus)
+    //   res.send(updatedResult);
+    // })
     // app.get('/orders', verifyJWT,async (req, res) => {
     //   const query = {};
     //   const cursor = ordersCollection.find(query);
