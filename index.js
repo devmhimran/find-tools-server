@@ -65,7 +65,35 @@ async function run() {
       const singleProduct = await productCollection.findOne(productQuery);
       res.send(singleProduct);
     });
+    app.put('/product/:id', async (req, res) => {
+      // const productId = req.params.id;
+      // const productQuery = { _id: ObjectId(productId) };
+      // const singleProduct = await productCollection.findOne(productQuery);
+      // res.send(singleProduct);
+      const productId = req.params.id;
+      const productQuantity = req.body;
+      const filter = { _id: ObjectId(productId) }; 
+      const options ={upsert: true};
+      const updatedDoc = {
+        $set:{
+          productQuantity: productQuantity.productQuantity,
+        }
+      };
+      const updatedResult = await productCollection.updateOne(filter, updatedDoc, options);
+      res.send(updatedResult);
 
+    });
+
+    app.post('/order', verifyJWT, (req, res) => {
+      const order = req.body;
+      const result = ordersCollection.insertOne(order);
+      res.send(result);
+    })
+    app.post('/products', verifyJWT, (req, res) => {
+      const addProduct = req.body;
+      const result = productCollection.insertOne(addProduct);
+      res.send(result);
+    })
     app.put('/update/:email', verifyJWT, async (req, res) => {
       const email = req.params.email;
       const userDetail = req.body;
@@ -125,16 +153,6 @@ async function run() {
       res.send({ admin: adminCheck })
     })
 
-    app.post('/order', verifyJWT, (req, res) => {
-      const order = req.body;
-      const result = ordersCollection.insertOne(order);
-      res.send(result);
-    })
-    app.post('/products', verifyJWT, (req, res) => {
-      const addProduct = req.body;
-      const result = productCollection.insertOne(addProduct);
-      res.send(result);
-    })
 
   } finally {
     // await client.close();
