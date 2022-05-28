@@ -4,7 +4,7 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const port = process.env.PORT || 5000;
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 app.use(cors());
@@ -35,6 +35,7 @@ async function run() {
     await client.connect();
     const userCollection = client.db('Find-Tools').collection('users');
     const productCollection = client.db('Find-Tools').collection('products');
+    const ordersCollection = client.db('Find-Tools').collection('orders');
 
     // app.get('/products', (req, res)=>{
 
@@ -57,6 +58,12 @@ async function run() {
       const email = req.params.email;
       const user = await userCollection.findOne({ email: email });
       res.send(user);
+    });
+    app.get('/product/:id', async (req, res) => {
+      const productId = req.params.id;
+      const productQuery = { _id: ObjectId(productId) };
+      const singleProduct = await productCollection.findOne(productQuery);
+      res.send(singleProduct);
     });
 
     app.put('/update/:email', verifyJWT, async (req, res) => {
@@ -118,6 +125,11 @@ async function run() {
       res.send({ admin: adminCheck })
     })
 
+    app.post('/order', verifyJWT, (req, res) => {
+      const order = req.body;
+      const result = ordersCollection.insertOne(order);
+      res.send(result);
+    })
     app.post('/products', verifyJWT, (req, res) => {
       const addProduct = req.body;
       const result = productCollection.insertOne(addProduct);
