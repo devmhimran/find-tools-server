@@ -66,10 +66,6 @@ async function run() {
       res.send(singleProduct);
     });
     app.put('/product/:id', async (req, res) => {
-      // const productId = req.params.id;
-      // const productQuery = { _id: ObjectId(productId) };
-      // const singleProduct = await productCollection.findOne(productQuery);
-      // res.send(singleProduct);
       const productId = req.params.id;
       const productQuantity = req.body;
       const filter = { _id: ObjectId(productId) }; 
@@ -89,6 +85,17 @@ async function run() {
       const result = ordersCollection.insertOne(order);
       res.send(result);
     })
+    app.get('/orders', verifyJWT,async (req, res) => {
+      const email = req.query.email;
+      const order = await ordersCollection.find({ email: email }).toArray();
+      res.send(order);
+    })
+    // app.get('/orders', verifyJWT,async (req, res) => {
+    //   const query = {};
+    //   const cursor = ordersCollection.find(query);
+    //   const orders = await cursor.toArray();
+    //   res.send(orders);
+    // })
     app.post('/products', verifyJWT, (req, res) => {
       const addProduct = req.body;
       const result = productCollection.insertOne(addProduct);
