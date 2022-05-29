@@ -126,7 +126,6 @@ async function run() {
       const payment = req.body;
       console.log(payment);
       const filter = {_id: ObjectId(id)};
-      // const options = { upsert: true };
       const updatedDoc ={
         $set:{
           status: 'paid',
@@ -137,6 +136,12 @@ async function run() {
       const updateOrder =  await ordersCollection.updateOne(filter, updatedDoc);
       const result =  await paymentCollection.insertOne(payment);
       res.send(updateOrder);
+    })
+    app.delete('/order/:id', verifyJWT, async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id: ObjectId(id)};
+      const order = await ordersCollection.deleteOne(query);
+      res.send(order);
     })
     // app.put('/orders/:id', verifyJWT,async (req, res)=>{
     //   const ordersId = req.params.id;
