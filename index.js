@@ -37,6 +37,7 @@ async function run() {
     const productCollection = client.db('Find-Tools').collection('products');
     const ordersCollection = client.db('Find-Tools').collection('orders');
     const reviewsCollection = client.db('Find-Tools').collection('reviews');
+    const paymentCollection = client.db('Find-Tools').collection('payment');
 
     // app.get('/products', (req, res)=>{
 
@@ -119,6 +120,23 @@ async function run() {
         payment_method_types:['card']
       })
       res.send({clientSecret: paymentIntent.client_secret});
+    })
+    app.patch('/order/:id' , verifyJWT, async(req, res) =>{
+      const id = req.params.id;
+      const payment = req.body;
+      console.log(payment);
+      const filter = {_id: ObjectId(id)};
+      // const options = { upsert: true };
+      const updatedDoc ={
+        $set:{
+          status: 'paid',
+          transactionId: payment.transactionId,
+
+        }
+      }
+      const updateOrder =  await ordersCollection.updateOne(filter, updatedDoc);
+      const result =  await paymentCollection.insertOne(payment);
+      res.send(updateOrder);
     })
     // app.put('/orders/:id', verifyJWT,async (req, res)=>{
     //   const ordersId = req.params.id;
