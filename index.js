@@ -36,6 +36,7 @@ async function run() {
     const userCollection = client.db('Find-Tools').collection('users');
     const productCollection = client.db('Find-Tools').collection('products');
     const ordersCollection = client.db('Find-Tools').collection('orders');
+    const reviewsCollection = client.db('Find-Tools').collection('reviews');
 
     // app.get('/products', (req, res)=>{
 
@@ -46,6 +47,12 @@ async function run() {
       const cursor = productCollection.find(query);
       const products = await cursor.toArray();
       res.send(products);
+    });
+    app.get('/reviews', async (req, res) => {
+      const query = {};
+      const cursor = reviewsCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
     });
 
     app.get('/users', async (req, res) => {
@@ -119,6 +126,11 @@ async function run() {
     app.post('/products', verifyJWT, (req, res) => {
       const addProduct = req.body;
       const result = productCollection.insertOne(addProduct);
+      res.send(result);
+    })
+    app.post('/review', verifyJWT, (req, res) => {
+      const review = req.body;
+      const result = reviewsCollection.insertOne(review);
       res.send(result);
     })
     app.put('/update/:email', verifyJWT, async (req, res) => {
