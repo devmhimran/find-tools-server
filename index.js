@@ -80,6 +80,12 @@ async function run() {
 
     });
 
+    app.get('/allOrders', verifyJWT, async(req, res) => {
+      const query = {};
+      const cursor = ordersCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    })
     app.post('/order', verifyJWT, (req, res) => {
       const order = req.body;
       const result = ordersCollection.insertOne(order);
@@ -170,7 +176,6 @@ async function run() {
       const email = req.params.email;
       const user = await userCollection.findOne({ email: email });
       const adminCheck = user.role === 'admin';
-      console.log(user);
       res.send({ admin: adminCheck })
     })
 
