@@ -103,6 +103,12 @@ async function run() {
       const order = await ordersCollection.find({ email: email }).toArray();
       res.send(order);
     })
+    app.get('/order/:id', verifyJWT, async(req, res) =>{
+      const id = req.params.id;
+      const query = {_id: ObjectId(id)};
+      const order = await ordersCollection.findOne(query);
+      res.send(order);
+    })
     // app.put('/orders/:id', verifyJWT,async (req, res)=>{
     //   const ordersId = req.params.id;
     //   const ordersStatus = req.body;
